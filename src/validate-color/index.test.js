@@ -8,6 +8,7 @@ import validateColor, {
   validateHTMLColorHwb,
   validateHTMLColorLab,
   validateHTMLColorLch,
+  validateHTMLColorColor,
 } from "./index";
 
 // -- Color HEX
@@ -344,6 +345,26 @@ const validateHTMLColorLchValid = [
   'lch(.1 .1 .1 / .1)',
   'lch(.0 .0 .0 / .0)',
 ];
+
+const validateHTMLColorColorValid = [
+  'color(srgb 0.5 none 0.3)',
+  'color(srgb 1 0.360784 0.360784)',
+    'color(srgb 1 0.360784 0.360784 / 0.5)',
+  'color(display-p3 0.5 none 0.3)',
+  'color(display-p3 1 0.360784 0.360784)',
+  'color(display-p3 1 0.360784 0.360784 / 0.5)',
+  'color(rec2020 0.5 none 0.3)',
+  'color(rec2020 10% .3 10%)',
+  'color(rec2020 1 0.360784 0.360784 / 0.5)',
+]
+
+const validateHTMLColorColorInvalid = [
+  'color()',
+  'color(1 0.360784 0.360784)',
+  'color(1 0.360784 0.360784 / 0.5)',
+  'color(1 0.360784 0.360784 / 50%)',
+]
+
 // -- Color - Would be valid if we were not limiting greedy (+) spaces and digits by 9
 const validateHTMLColorReDoSInvalid = [
   'lab(67.5345% -8.6911 -159.131231 / .9871897322)',
@@ -362,6 +383,7 @@ const validateHTMLColorInvalid = [
     ...validateHTMLColorLabInvalid,
     ...validateHTMLColorLchInvalid,
     ...validateHTMLColorReDoSInvalid,
+    ...validateHTMLColorColorInvalid,
   ]),
 ];
 const validateHTMLColorValid = [
@@ -374,6 +396,7 @@ const validateHTMLColorValid = [
     ...validateHTMLColorHwbValid,
     ...validateHTMLColorLabValid,
     ...validateHTMLColorLchValid,
+    ...validateHTMLColorColorValid
   ]),
 ];
 // -- ALL colors
@@ -387,6 +410,7 @@ const validateColorInvalid = [
     ...validateHTMLColorLabInvalid,
     ...validateHTMLColorLchInvalid,
     ...validateHTMLColorReDoSInvalid,
+    ...validateHTMLColorColorInvalid
   ]),
 ];
 const validateColorValid = [
@@ -401,6 +425,7 @@ const validateColorValid = [
     ...validateHTMLColorHwbValid,
     ...validateHTMLColorLabValid,
     ...validateHTMLColorLchValid,
+    ...validateHTMLColorColorValid
   ]),
 ];
 
@@ -559,6 +584,25 @@ describe("validateHTMLColorLch", () => {
     validateHTMLColorLchValid.map((c) =>
       it(`validates "${c}"`, () => {
         const validation = validateHTMLColorLch(c);
+        expect(validation).toBe(true);
+      })
+    );
+  });
+});
+// -- Color color()
+describe("validateHTMLColorColor", () => {
+  describe("test invalid cases", () => {
+    validateHTMLColorColorInvalid.map((c) =>
+      it(`invalidates "${c}"`, () => {
+        const validation = validateHTMLColorColor(c);
+        expect(validation).toBe(false);
+      })
+    );
+  });
+  describe("test valid cases", () => {
+    validateHTMLColorColorValid.map((c) =>
+      it(`validates "${c}"`, () => {
+        const validation = validateHTMLColorColor(c);
         expect(validation).toBe(true);
       })
     );

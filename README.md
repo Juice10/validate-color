@@ -2,7 +2,7 @@
 
 # Validate Color
 
-> ✅🌈🙌 Validate HTML colors by `name`, `special name`, `hex`, `rgb`, `rgba`, `hsl`, `hsla`, `hwb`, `lab` or `lch` values
+> ✅🌈🙌 Validate HTML colors by `name`, `special name`, `hex`, `rgb`, `rgba`, `hsl`, `hsla`, `hwb`, `lab`, `lch` or `color` values
 
 [![Build Status](https://travis-ci.com/dreamyguy/validate-color.svg?branch=master)](https://travis-ci.org/dreamyguy/validate-color) [![Node Version](https://img.shields.io/badge/node-v12.4.0-brightgreen.svg)](https://github.com/nodejs/node/releases/tag/v12.4.0)
 [![NPM Version](https://img.shields.io/badge/npm-v6.9.0-brightgreen.svg)](https://github.com/npm/cli/releases/tag/v6.9.0)
@@ -24,6 +24,7 @@ As I was writing [Console Log Plus](https://github.com/dreamyguy/console-log-plu
 - `hwb` - `hwb(180deg 0% 0% / 100%)`
 - `lab` - `lab(2000.1337% -8.6911 -159.131231 / .987189732)`
 - `lch` - `lch(54.292% 106.839 40.853)`
+- `color` - `color(srgb 1 0.360784 0.360784)`
 
 Both `rgba` and `hsla` are now officially merged into their `rgb` and `hsl` counterparts, so the `a` can be omitted. The `a` is considered legacy syntax, so it will still work.
 
@@ -85,7 +86,7 @@ export default ColorBox;
 
 One can "extend" the library by using only parts of it.
 
-**1. Validate only HTML colors (`hex`, `rgb`, `rgba`, `hsl`, `hsla`, `hwb`, `lab`, `lch`), without `name`**
+**1. Validate only HTML colors (`hex`, `rgb`, `rgba`, `hsl`, `hsla`, `hwb`, `lab`, `lch`, `color`), without `name`**
 
 ```javascript
 import { validateHTMLColor } from "validate-color";
@@ -137,6 +138,14 @@ import { validateHTMLColorLab } from "validate-color";
 
 ```javascript
 import { validateHTMLColorLch } from "validate-color";
+```
+
+**9. Validate only `color` colors**
+
+See [`color()` documentation for more info](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/color).
+
+```javascript
+import { validateHTMLColorColor } from "validate-color";
 ```
 
 > 👉 I was proactive and added validation to these relatively new HTML/CSS colors (**HWB** & **LAB** & **LCH**), but since [they're still drafts at the time of this writing][9], they might still be not fully supported at the time of this reading.

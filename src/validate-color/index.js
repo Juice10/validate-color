@@ -210,11 +210,16 @@ const anyNumberWithinHundred = `(([0-9]|[1-9][0-9])?${optionalDecimals}|100)`;
 const anyNumberWithinThreeHundredSixty = `(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-9][0-9]|3[0-5][0-9])${optionalDecimals}|360)`;
 const anyPercentage = `(${anyNumber}%)`;
 const anyPercentageWithinHundred = `(${anyNumberWithinHundred}(%)?)`;
+const anyNumberPercentageOrNone = `(${anyNumber}|${anyPercentage}|none)`;
 const hundredPercent = `(([0-9]|[1-9][0-9]|100)%)`;
 const alphaPercentage = `(((${hundredPercent}))|(0?${optionalDecimals})|1))?`;
 const alphaPercentageRequired = `(${hundredPercent}|(0?${optionalDecimals})|1)`;
 const endingWithAlphaPercentage = `${spaceNoneOrMore}\\)?)(${spaceNoneOrMore}(\\/?)${spaceOneOrMore}${alphaPercentage}${spaceNoneOrMore}\\)`;
 const degRegex = `(-?${anyNumberWithinThreeHundredSixty}(deg)?)`;
+const gradRegex = `(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-9][0-9]|3[0-9][0-9]|400)grad)`;
+const radRegex = `((([0-5])?\\.${digitOneOrMore}|6\\.([0-9]|1[0-9]|2[0-8])|[0-6])rad)`;
+const turnRegex = `((0?${optionalDecimals}|1)turn)`;
+const angleRegex = `(${degRegex}|${gradRegex}|${radRegex}|${turnRegex})`;
 
 // * Validate HTML color 'rgb'
 // -- legacy notation
@@ -249,10 +254,7 @@ export const validateHTMLColorRgb = (color) => {
 export const validateHTMLColorHsl = (color) => {
   if (isString(color)) {
     // Validate each possible unit value separately, as their values differ
-    const gradRegex = `(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-9][0-9]|3[0-9][0-9]|400)grad)`;
-    const radRegex = `((([0-5])?\\.${digitOneOrMore}|6\\.([0-9]|1[0-9]|2[0-8])|[0-6])rad)`;
-    const turnRegex = `((0?${optionalDecimals}|1)turn)`;
-    const regexLogic = `^(hsl)a?\\((${spaceNoneOrMore}(${degRegex}|${gradRegex}|${radRegex}|${turnRegex})${optionalCommaOrRequiredSpace})(${spaceNoneOrMore}(0|${hundredPercent})${optionalCommaOrRequiredSpace})(${spaceNoneOrMore}(0|${hundredPercent})${spaceNoneOrMore}\\)?)(${spaceNoneOrMore}(\\/?|,?)${spaceNoneOrMore}(((${hundredPercent}))|(0?${optionalDecimals})|1))?\\)$`;
+    const regexLogic = `^(hsl)a?\\((${spaceNoneOrMore}(${angleRegex})${optionalCommaOrRequiredSpace})(${spaceNoneOrMore}(0|${hundredPercent})${optionalCommaOrRequiredSpace})(${spaceNoneOrMore}(0|${hundredPercent})${spaceNoneOrMore}\\)?)(${spaceNoneOrMore}(\\/?|,?)${spaceNoneOrMore}(((${hundredPercent}))|(0?${optionalDecimals})|1))?\\)$`;
     const regex = new RegExp(regexLogic);
     debugRegex && console.log('regex (hsl)', regex);
     return color && regex.test(color);
@@ -286,7 +288,7 @@ export const validateHTMLColorLab = (color) => {
   return false;
 };
 
-// * Validate HTML color 'lwc'
+// * Validate HTML color 'lch'
 // -- See https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/lch
 // -- See https://lea.verou.me/2020/04/lch-colors-in-css-what-why-and-how/
 // -- lch(L C H [/ A])
@@ -320,6 +322,99 @@ export const validateHTMLColorLch = (color) => {
   return false;
 };
 
+// * Validate HTML color 'color'
+// -- See https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/color
+// -- color(colorspace c1 c2 c3[ / A])
+// <color()> = 
+//   color( [ from <color> ]? <colorspace-params> [ / [ <alpha-value> | none ] ]? )  
+//
+// <colorspace-params> = 
+//   <custom-params>                  |
+//   <predefined-rgb-params>          |
+//   <predefined-polar-params>        |
+//   <predefined-rectangular-params>  |
+//   <xyz-params>                     
+//
+// <alpha-value> = 
+//   <number>      |
+//   <percentage>  
+//
+// <custom-params> = 
+//   <dashed-ident> [ <number> | <percentage> | none ]+  
+//
+// <predefined-rgb-params> = 
+//   <predefined-rgb> [ <number> | <percentage> | none ]{3}  
+//
+// <predefined-polar-params> = 
+//   jzczhz [ <number> | <percentage> | none ]{2} [ <hue> | none ]  
+//
+// <predefined-rectangular-params> = 
+//   <predefined-rectangular> [ <number> | <percentage> | none ]{3}  
+//
+// <xyz-params> = 
+//   <xyz> [ <number> | <percentage> | none ]{3}  
+//
+// <predefined-rgb> = 
+//   srgb            |
+//   srgb-linear     |
+//   display-p3      |
+//   a98-rgb         |
+//   prophoto-rgb    |
+//   rec2020         |
+//   rec2100-pq      |
+//   rec2100-hlg     |
+//   rec2100-linear  
+//
+// <hue> = 
+//   <number>  |
+//   <angle>   
+//
+// <predefined-rectangular> = 
+//   jzazbz  |
+//   ictcp   
+//
+// <xyz> = 
+//   xyz      |
+//   xyz-d50  |
+//   xyz-d65  
+export const validateHTMLColorColor = (color) => {
+  const debug = false;
+  if (isString(color)) {
+    // Optional 'from <color>' clause
+    const fromClause = `(${spaceNoneOrMore}from${spaceOneOrMore}${spaceNoneOrMore}[^\\s]+)?`;
+
+    const dashedIndent = `(--[a-z][a-z0-9-]*)`;
+    const customParam = `(${dashedIndent}(${spaceOneOrMore}${anyNumberPercentageOrNone})+)`;
+    
+    const predefinedRbg = `(srgb|srgb-linear|display-p3|a98-rgb|prophoto-rgb|rec2020|rec2100-pq|rec2100-hlg|rec2100-linear)`;
+    const predefinedRgbParams = `(${predefinedRbg}(${spaceOneOrMore}${anyNumberPercentageOrNone}){3})`;
+    
+    const hue = `(${anyNumber}|${angleRegex})`;
+    
+    const predefinedPolarParams = `(jzczhz(${spaceOneOrMore}${anyNumberPercentageOrNone}){2}(${spaceOneOrMore}(${hue}|none))?)`;
+    
+    const predefinedRectangular = `(jzazbz|ictcp)`;
+    const predefinedRectangularParams = `(${predefinedRectangular}(${spaceOneOrMore}${anyNumberPercentageOrNone}){3})`;
+    
+    const xyz = `(xyz|xyz-d50|xyz-d65)`;
+    const xyzParams = `(${xyz}(${spaceOneOrMore}${anyNumberPercentageOrNone}){3})`;
+
+    const colorspaceParams = `(${customParam}|${predefinedRgbParams}|${predefinedPolarParams}|${predefinedRectangularParams}|${xyzParams})`;
+
+    // Optional alpha value
+    const alphaValue = `(${spaceNoneOrMore}\\/${spaceNoneOrMore}${anyNumberPercentageOrNone})?`;
+
+    const regexLogic = `^color\\(${fromClause}${spaceNoneOrMore}${colorspaceParams}${alphaValue}${spaceNoneOrMore}\\)$`;
+
+    debug && console.log('[validateHTMLColorColor] fromClause', fromClause);
+
+    const regex = new RegExp(regexLogic, 'i');
+    debugRegex && console.log('regex (color)', regex);
+    return color && regex.test(color);
+  }
+  return false;
+};
+
 // * Validate only HTML colors (`hex`, `rgb`, `rgba`, `hsl`, `hsla`, `hwb`, `lab`, `lch`), without `name` og `special name`**
 export const validateHTMLColor = (color) => {
   if (
@@ -328,7 +423,8 @@ export const validateHTMLColor = (color) => {
     validateHTMLColorHsl(color) ||
     validateHTMLColorHwb(color) ||
     validateHTMLColorLab(color) ||
-    validateHTMLColorLch(color)
+    validateHTMLColorLch(color) ||
+    validateHTMLColorColor(color)
   ) {
     return true;
   }
@@ -350,7 +446,8 @@ const validateColor = (color) => {
     validateHTMLColorHsl(color) ||
     validateHTMLColorHwb(color) ||
     validateHTMLColorLab(color) ||
-    validateHTMLColorLch(color)
+    validateHTMLColorLch(color) ||
+    validateHTMLColorColor(color)
   ) {
     return true;
   }
