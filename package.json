@@ -62,7 +62,7 @@
     "build": "NODE_OPTIONS=--openssl-legacy-provider react-scripts build",
     "postbuild": "echo 🎉 'build' was completed",
     "prebuild-npm": "./bin/preBuildNpm.sh",
-    "build-npm": "NODE_ENV=npm webpack --config webpack.config.npm.js",
+    "build-npm": "NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=npm webpack --config webpack.config.npm.js",
     "postbuild-npm": "./bin/postBuildNpm.sh",
     "test": "react-scripts test",
     "testTravis": "CI=true react-scripts test",
