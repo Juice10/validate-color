@@ -289,8 +289,8 @@ const validateHTMLColorLabInvalid = [
   'lab(67.5345% -10 -161 / 100%)',
   'lab(67.5345% -10 -160 / 101%)',
   // Valid, in practice, but we're invalidating this as a way to avoid 'ReDoS' exploitation
-  'lab(67.5345% -8.6911 -159.131231)',
-  'lab(67.5345% -8.6911 -159.131231 / .987189732)',
+  'lab(67.5345% -8.6911 -159.1312311)',
+  'lab(67.5345% -8.6911 -159.1312311 / .987189732)',
 ];
 const validateHTMLColorLabValid = [
   'lab(67.5345% -8.6911 -41.6019)',
@@ -367,7 +367,7 @@ const validateHTMLColorColorInvalid = [
 
 // -- Color - Would be valid if we were not limiting greedy (+) spaces and digits by 9
 const validateHTMLColorReDoSInvalid = [
-  'lab(67.5345% -8.6911 -159.131231 / .9871897322)',
+  'lab(67.5345% -8.6911 -159.1312311 / .9871897322)',
   'hsl(0,                   0  , 0                          )',
 ]
 // -- ALL colors, without 'name' or 'special name'

@@ -201,8 +201,8 @@ export const validateHTMLColorHex = (color) => {
 
 const spaceNoneOrMore = `([\\s]{0,5})`;
 const spaceOneOrMore = `([\\s]{1,5})`;
-const digitNoneOrMore = `([\\d]{0,5})`;
-const digitOneOrMore = `([\\d]{1,5})`;
+const digitNoneOrMore = `([\\d]{0,6})`;
+const digitOneOrMore = `([\\d]{1,6})`;
 const optionalCommaOrRequiredSpace = `((${spaceNoneOrMore},${spaceNoneOrMore})|(${spaceOneOrMore}))`;
 const optionalDecimals = `((\\.${digitOneOrMore})?)`;
 const anyNumber = `(${digitNoneOrMore}${optionalDecimals})`;
