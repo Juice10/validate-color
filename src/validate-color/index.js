@@ -380,8 +380,9 @@ export const validateHTMLColorLch = (color) => {
 export const validateHTMLColorColor = (color) => {
   const debug = false;
   if (isString(color)) {
-    // Optional 'from <color>' clause
-    const fromClause = `(${spaceNoneOrMore}from${spaceOneOrMore}${spaceNoneOrMore}[^\\s]+)?`;
+    // TODO: from clause is disabled for now as it is incomplete
+    // // Optional 'from <color>' clause
+    // const fromClause = `(${spaceNoneOrMore}from${spaceOneOrMore}${spaceNoneOrMore}(${htmlColorNames.join('|')}))?`;
 
     const dashedIndent = `(--[a-z][a-z0-9-]*)`;
     const customParam = `(${dashedIndent}(${spaceOneOrMore}${anyNumberPercentageOrNone})+)`;
@@ -404,9 +405,16 @@ export const validateHTMLColorColor = (color) => {
     // Optional alpha value
     const alphaValue = `(${spaceNoneOrMore}\\/${spaceNoneOrMore}${anyNumberPercentageOrNone})?`;
 
-    const regexLogic = `^color\\(${fromClause}${spaceNoneOrMore}${colorspaceParams}${alphaValue}${spaceNoneOrMore}\\)$`;
+    const regexLogic = `^color\\(${spaceNoneOrMore}${colorspaceParams}${alphaValue}${spaceNoneOrMore}\\)$`;
 
-    debug && console.log('[validateHTMLColorColor] fromClause', fromClause);
+    // debug && console.log('[validateHTMLColorColor] fromClause', fromClause);
+    debug && console.log('[validateHTMLColorColor] customParam', customParam);
+    debug && console.log('[validateHTMLColorColor] predefinedRgbParams', predefinedRgbParams);
+    debug && console.log('[validateHTMLColorColor] predefinedPolarParams', predefinedPolarParams);
+    debug && console.log('[validateHTMLColorColor] predefinedRectangularParams', predefinedRectangularParams);
+    debug && console.log('[validateHTMLColorColor] xyzParams', xyzParams);
+    debug && console.log('[validateHTMLColorColor] colorspaceParams', colorspaceParams);
+    debug && console.log('[validateHTMLColorColor] alphaValue', alphaValue);
 
     const regex = new RegExp(regexLogic, 'i');
     debugRegex && console.log('regex (color)', regex);
