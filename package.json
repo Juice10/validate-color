@@ -70,6 +70,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "deploy-npm": "npm run build-npm && npm publish",
+    "prepare": "npm run build-npm",
     "release": "npm run deploy && npm run deploy-npm"
   },
   "eslintConfig": {
