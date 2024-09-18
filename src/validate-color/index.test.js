@@ -347,12 +347,12 @@ const validateHTMLColorLchValid = [
 ];
 
 const validateHTMLColorColorValid = [
+  'color(display-p3 1 0.5 0)', // mdn web docs 
+  'color(display-p3 1 0.5 0 / .5)', // mdn web docs
   'color(srgb 0.5 none 0.3)',
   'color(srgb 1 0.360784 0.360784)',
-    'color(srgb 1 0.360784 0.360784 / 0.5)',
-  'color(display-p3 0.5 none 0.3)',
-  'color(display-p3 1 0.360784 0.360784)',
-  'color(display-p3 1 0.360784 0.360784 / 0.5)',
+  'color(srgb 1 0.360784 0.360784 / 0.5)',
+  'color(display-p3 1 none 0.360784)',
   'color(rec2020 0.5 none 0.3)',
   'color(rec2020 10% .3 10%)',
   'color(rec2020 1 0.360784 0.360784 / 0.5)',
