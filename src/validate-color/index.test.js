@@ -289,8 +289,8 @@ const validateHTMLColorLabInvalid = [
   'lab(67.5345% -10 -161 / 100%)',
   'lab(67.5345% -10 -160 / 101%)',
   // Valid, in practice, but we're invalidating this as a way to avoid 'ReDoS' exploitation
-  'lab(67.5345% -8.6911 -159.1312311)',
-  'lab(67.5345% -8.6911 -159.1312311 / .987189732)',
+  'lab(67.5345% -8.6911 -159.13123111)',
+  'lab(67.5345% -8.6911 -159.13123111 / .987189732)',
 ];
 const validateHTMLColorLabValid = [
   'lab(67.5345% -8.6911 -41.6019)',
